@@ -1,0 +1,27 @@
+package dao.dao;
+
+import model.Product;
+
+import java.util.List;
+
+public interface ProductDAO {
+    List<Product> findAll(int page, int pageSize);
+
+    int countActiveProducts();
+
+    Product findById(int id);
+
+    boolean existsById(int id);
+
+    boolean insert(Product product);
+
+    boolean update(Product product);
+
+    boolean softDelete(int id);
+
+    List<Product> searchByName(String keyword);
+
+    List<Product> sortByPriceAsc();
+
+    List<Product> sortByPriceDesc();
+}
