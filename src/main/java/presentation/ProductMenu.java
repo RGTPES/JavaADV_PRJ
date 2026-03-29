@@ -1,9 +1,6 @@
 package presentation;
-
-
 import model.Product;
 import service.impl.ProductServiceImpl;
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,7 +8,6 @@ public class ProductMenu {
     private final Scanner sc = new Scanner(System.in);
     private final ProductServiceImpl productService = new ProductServiceImpl();
     private static final int PAGE_SIZE = 5;
-
     public void displayMenu() {
         int choice;
         do {
@@ -189,26 +185,6 @@ public class ProductMenu {
         System.out.println(result ? "Xoa thanh cong." : "Xoa that bai.");
     }
 
-    private void searchProduct() {
-        System.out.print("Nhap ten can tim: ");
-        String keyword = sc.nextLine().trim();
-
-        List<Product> list = productService.searchByName(keyword);
-        showList(list);
-    }
-
-    private void showList(List<Product> list) {
-        if (list == null || list.isEmpty()) {
-            System.out.println("Khong co du lieu.");
-            return;
-        }
-
-        for (Product p : list) {
-            printProduct(p);
-            System.out.println("--------------------------------");
-        }
-    }
-
     private void printProduct(Product p) {
         System.out.println("Id: " + p.getProductId());
         System.out.println("Ten: " + p.getProductName());
@@ -231,7 +207,43 @@ public class ProductMenu {
             }
         }
     }
+    public void searchProduct() {
+        System.out.print("Nhap ten can tim: ");
+        String keyword = sc.nextLine().trim();
+        showList(productService.searchByName(keyword));
+    }
 
+    public List<Product> sortAsc() {
+        return productService.sortByPriceAsc();
+    }
+
+    public List<Product> sortDesc() {
+        return productService.sortByPriceDesc();
+    }
+
+    public void showList(List<Product> list) {
+        if (list == null || list.isEmpty()) {
+            System.out.println("Khong co du lieu.");
+            return;
+        }
+        for (Product p : list) {
+            printProduct(p);
+            System.out.println("--------------------------------");
+        }
+    }
+    public void showListHaveProduct(List<Product> list) {
+        boolean hasProduct = false;
+        for (Product p : list) {
+            if (p.getStock() > 0) {
+                printProduct(p);
+                System.out.println("--------------------------------");
+                hasProduct = true;
+            }
+        }
+        if (!hasProduct) {
+            System.out.println("Khong co san pham con hang.");
+        }
+    }
     private double inputDouble() {
         while (true) {
             try {
@@ -251,4 +263,5 @@ public class ProductMenu {
             System.out.print("Truong nay khong duoc de trong. Nhap lai: ");
         }
     }
+
 }

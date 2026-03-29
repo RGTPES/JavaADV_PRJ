@@ -63,6 +63,11 @@ public class ProductServiceImpl implements ProductService {
         return productDAO.sortByPriceAsc();
     }
 @Override
+public List<Product> getAllProducts(){
+    return productDAO.getAllProducts();
+
+}
+@Override
     public List<Product> sortByPriceDesc() {
         return productDAO.sortByPriceDesc();
     }
@@ -87,4 +92,5 @@ public class ProductServiceImpl implements ProductService {
 
         return p.getCategoryId() > 0;
     }
+
 }

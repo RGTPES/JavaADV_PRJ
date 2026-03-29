@@ -1,9 +1,7 @@
 package dao.impl;
-
 import dao.dao.ProductDAO;
 import model.Product;
 import util.DBConnection;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,7 +50,6 @@ public class ProductDAOImpl implements ProductDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return 0;
     }
 
@@ -97,7 +94,35 @@ public class ProductDAOImpl implements ProductDAO {
 
         return false;
     }
+@Override
+public List<Product> getAllProducts(){
+        String sql = "select * from products where status = 'ACTIVE'";
+        List<Product> list = new ArrayList<>();
+        try(
+                Connection conn = DBConnection.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()
+                ) {
+            while (rs.next()) {
+                Product p = new Product();
+                p.setProductId(rs.getInt("product_id"));
+                p.setProductName(rs.getString("product_name"));
+                p.setStorage(rs.getString("storage"));
+                p.setColor(rs.getString("color"));
+                p.setPrice(rs.getDouble("price"));
+                p.setStock(rs.getInt("stock"));
+                p.setDescription(rs.getString("description"));
+                p.setCategoryId(rs.getInt("category_id"));
+                p.setStatus(rs.getString("status"));
+                p.setCreatedAt(rs.getString("created_at"));
+                list.add(p);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
 
+        }
+        return list;
+}
     @Override
     public boolean insert(Product p) {
         String sql = "insert into products(product_name, storage, color, price, stock, description, category_id, status) " +

@@ -11,6 +11,7 @@ public interface ProductService {
 
     Product findById(int id);
 
+
     boolean addProduct(Product product);
 
     boolean updateProduct(Product product);
@@ -22,4 +23,8 @@ public interface ProductService {
     List<Product> sortByPriceAsc();
 
     List<Product> sortByPriceDesc();
+
+    List<Product> getAllProducts ();
+
+
 }

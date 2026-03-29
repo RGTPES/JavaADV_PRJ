@@ -24,4 +24,5 @@ public interface ProductDAO {
     List<Product> sortByPriceAsc();
 
     List<Product> sortByPriceDesc();
+    List<Product> getAllProducts();
 }

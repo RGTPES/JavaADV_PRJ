@@ -5,17 +5,18 @@ public class CartItem {
     private String productName;
     private double price;
     private int quantity;
-    private double subtotal;
 
     public CartItem(int productId, String productName, double price, int quantity, double subtotal) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
         this.quantity = quantity;
-        this.subtotal = subtotal;
     }
 
     public CartItem() {
+    }
+
+    public CartItem(int productId, String productName, double price, int quantity) {
     }
 
     public int getProductId() {
@@ -49,12 +50,7 @@ public class CartItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
     public double getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
+        return price * quantity;
     }
 }
