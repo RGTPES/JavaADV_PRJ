@@ -20,7 +20,7 @@ public class OrderServiceImpl implements OrderService {
         if (!isValidStatus(status)) {
             return List.of();
         }
-        return orderDAO.findByStatus(status);
+        return orderDAO.findByStatus(status.trim().toUpperCase());
     }
 
     @Override
@@ -34,26 +34,29 @@ public class OrderServiceImpl implements OrderService {
             return false;
         }
 
-        String currentStatus = currentOrder.getStatus();
+        String currentStatus = currentOrder.getStatus().trim().toUpperCase();
+        String nextStatus = newStatus.trim().toUpperCase();
 
-        if (!isValidTransition(currentStatus, newStatus)) {
+        if (!isValidTransition(currentStatus, nextStatus)) {
             return false;
         }
 
-        return orderDAO.updateStatus(orderId, newStatus);
+        return orderDAO.updateStatus(orderId, nextStatus);
     }
 
     private boolean isValidStatus(String status) {
-        return "PENDING".equalsIgnoreCase(status)
-                || "SHIPPING".equalsIgnoreCase(status)
-                || "DELIVERED".equalsIgnoreCase(status)
-                || "CANCELLED".equalsIgnoreCase(status);
+        if (status == null) {
+            return false;
+        }
+
+        String s = status.trim().toUpperCase();
+        return s.equals("PENDING")
+                || s.equals("SHIPPING")
+                || s.equals("DELIVERED")
+                || s.equals("CANCELLED");
     }
 
     private boolean isValidTransition(String currentStatus, String newStatus) {
-        currentStatus = currentStatus.toUpperCase();
-        newStatus = newStatus.toUpperCase();
-
         if (currentStatus.equals(newStatus)) {
             return true;
         }
@@ -62,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
             case "PENDING":
                 return newStatus.equals("SHIPPING") || newStatus.equals("CANCELLED");
             case "SHIPPING":
-                return newStatus.equals("DELIVERED");
+                return newStatus.equals("DELIVERED") || newStatus.equals("CANCELLED");
             case "DELIVERED":
             case "CANCELLED":
                 return false;
