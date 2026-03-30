@@ -22,4 +22,8 @@ public class CartServiceImpl implements CartService {
     public List<CartItem> viewCart() {
         return cartDao.viewCart();
     }
+    @Override
+    public void checkout(int userId) {
+        cartDao.checkout(userId);
+    }
 }

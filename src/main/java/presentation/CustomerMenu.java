@@ -28,19 +28,16 @@ public class CustomerMenu {
             System.out.println("2. Them san pham vao gio hang");
             System.out.println("3. Xac nhan dat hang");
             System.out.println("0. Dang xuat");
-            System.out.print("Chon: ");
-
-            choice = inputInt();
-
+            choice = inputInt("Moi ban nhap lua chon: ");
             switch (choice) {
                 case 1:
                     showProducts();
                     break;
                 case 2:
-//                    addToCart();
+                    addToCart();
                     break;
                 case 3:
-
+                    checkout(user);
                     break;
                 case 0:
                     System.out.println("Dang xuat thanh cong.");
@@ -50,30 +47,24 @@ public class CustomerMenu {
             }
         } while (choice != 0);
     }
-
     // ===== Xem sản phẩm =====
     private void showProducts() {
         List<Product> list = productService.getAllProducts();
         productMenu.showListHaveProduct(list);
     }
-
     // ===== Thêm vào giỏ =====
     private void addToCart() {
         int productId = inputInt("Nhap ID san pham: ");
         int quantity = inputInt("Nhap so luong: ");
-
         Product product = productService.findById(productId);
-
         if (product == null) {
             System.out.println("San pham khong ton tai!");
             return;
         }
-
         if (product.getStock() < quantity) {
             System.out.println("Khong du hang trong kho!");
             return;
         }
-
         cartService.addToCart(product, quantity);
         System.out.println("Them vao gio hang thanh cong!");
     }
@@ -91,19 +82,9 @@ public class CustomerMenu {
         if (!confirm) return;
 
         cartService.checkout(user.getUserId());
-        System.out.println("Dat hang thanh cong!");
     }
 
-    // ===== Input =====
-    private int inputInt() {
-        while (true) {
-            try {
-                return Integer.parseInt(util.InputUtil.inputString("").trim());
-            } catch (Exception e) {
-                System.out.print("Vui long nhap so: ");
-            }
-        }
-    }
+
 
     private int inputInt(String message) {
         while (true) {

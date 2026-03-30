@@ -16,6 +16,7 @@ public class AdminMenu {
             System.out.println("\n========== Admin menu ==========");
             System.out.println("Xin chao: " + user.getFullName());
             System.out.println("1. Quan ly san pham");
+            System.out.println("2. Quan ly don hang");
             System.out.println("0. Dang xuat");
             System.out.print("Chon: ");
 

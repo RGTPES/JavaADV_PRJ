@@ -52,7 +52,6 @@ public class CategoryMenu {
             System.out.println("Khong co danh muc nao!");
             return;
         }
-
         System.out.println("\n===== Danh sach danh muc =====");
         System.out.printf("%-10s %-25s %-30s %-15s%n", "Id", "Ten danh muc", "Mo ta", "Trang thai");
 

@@ -6,7 +6,6 @@ public class OrderDetail {
     private int productId;
     private int quantity;
     private double price;
-
     public OrderDetail(int orderDetailId, int orderId, int productId, int quantity, double price) {
         this.orderDetailId = orderDetailId;
         this.orderId = orderId;
@@ -14,7 +13,6 @@ public class OrderDetail {
         this.quantity = quantity;
         this.price = price;
     }
-
     public OrderDetail() {
     }
 

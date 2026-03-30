@@ -6,7 +6,7 @@ public class CartItem {
     private double price;
     private int quantity;
 
-    public CartItem(int productId, String productName, double price, int quantity, double subtotal) {
+    public CartItem(int productId, String productName, double price, int quantity) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -14,9 +14,6 @@ public class CartItem {
     }
 
     public CartItem() {
-    }
-
-    public CartItem(int productId, String productName, double price, int quantity) {
     }
 
     public int getProductId() {
