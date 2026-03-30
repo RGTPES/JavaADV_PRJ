@@ -3,11 +3,12 @@ package presentation;
 import model.Users;
 
 public class AdminMenu {
-
     private final ProductMenu productMenu;
+    private final OrderMenu orderMenu;
 
     public AdminMenu() {
         productMenu = new ProductMenu();
+        orderMenu = new OrderMenu();
     }
 
     public void show(Users user) {
@@ -25,6 +26,9 @@ public class AdminMenu {
             switch (choice) {
                 case 1:
                     productMenu.displayMenu();
+                    break;
+                case 2:
+                    orderMenu.displayMenu();
                     break;
                 case 0:
                     System.out.println("Dang xuat thanh cong.");
