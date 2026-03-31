@@ -107,8 +107,8 @@ public class CouponDAOImpl implements CouponDAO {
     @Override
     public boolean insert(Coupon coupon) {
         String sql = """
-                insert into coupons(code, discount_percent, quantity, start_time, end_time, status)
-                values (?, ?, ?, ?, ?, ?)
+                insert into coupons(code, discount_percent, quantity, min_order_amount, start_time, end_time, status)
+                values (?, ?, ?,  ?, ?, ?, ?)
                 """;
 
         try (
@@ -118,9 +118,10 @@ public class CouponDAOImpl implements CouponDAO {
             ps.setString(1, coupon.getCouponCode().trim().toUpperCase());
             ps.setDouble(2, coupon.getDiscountPercent());
             ps.setInt(3, coupon.getQuantity());
-            ps.setString(4, coupon.getStartDate());
-            ps.setString(5, coupon.getEndDate());
-            ps.setString(6, coupon.getStatus().trim().toUpperCase());
+            ps.setDouble(4, coupon.getMinOrderAmount());
+            ps.setString(5, coupon.getStartDate());
+            ps.setString(6, coupon.getEndDate());
+            ps.setString(7, coupon.getStatus().trim().toUpperCase());
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -134,7 +135,13 @@ public class CouponDAOImpl implements CouponDAO {
     public boolean update(Coupon coupon) {
         String sql = """
                 update coupons
-                set code = ?, discount_percent = ?, quantity = ?, start_time = ?, end_time = ?, status = ?
+                set code = ?,
+                    discount_percent = ?,
+                    quantity = ?,
+                    min_order_amount = ?,
+                    start_time = ?,
+                    end_time = ?,
+                    status = ?
                 where coupon_id = ?
                 """;
 
@@ -145,10 +152,11 @@ public class CouponDAOImpl implements CouponDAO {
             ps.setString(1, coupon.getCouponCode().trim().toUpperCase());
             ps.setDouble(2, coupon.getDiscountPercent());
             ps.setInt(3, coupon.getQuantity());
-            ps.setString(4, coupon.getStartDate());
-            ps.setString(5, coupon.getEndDate());
-            ps.setString(6, coupon.getStatus().trim().toUpperCase());
-            ps.setInt(7, coupon.getCouponId());
+            ps.setDouble(4, coupon.getMinOrderAmount());
+            ps.setString(5, coupon.getStartDate());
+            ps.setString(6, coupon.getEndDate());
+            ps.setString(7, coupon.getStatus().trim().toUpperCase());
+            ps.setInt(8, coupon.getCouponId());
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -177,7 +185,11 @@ public class CouponDAOImpl implements CouponDAO {
 
     @Override
     public boolean decreaseQuantity(Connection conn, int couponId) {
-        String sql = "update coupons set quantity = quantity - 1 where coupon_id = ? and quantity > 0";
+        String sql = """
+                update coupons
+                set quantity = quantity - 1
+                where coupon_id = ? and quantity > 0
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, couponId);
@@ -195,6 +207,7 @@ public class CouponDAOImpl implements CouponDAO {
         c.setCouponCode(rs.getString("code"));
         c.setDiscountPercent(rs.getDouble("discount_percent"));
         c.setQuantity(rs.getInt("quantity"));
+        c.setMinOrderAmount(rs.getDouble("min_order_amount"));
         c.setStartDate(rs.getString("start_time"));
         c.setEndDate(rs.getString("end_time"));
         c.setStatus(rs.getString("status"));

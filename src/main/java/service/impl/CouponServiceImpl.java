@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CouponServiceImpl implements CouponService {
-
     private final CouponDAO couponDAO = new CouponDAOImpl();
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -113,6 +112,12 @@ public class CouponServiceImpl implements CouponService {
             return false;
         }
 
+
+        if (coupon.getMinOrderAmount() < 0) {
+            System.out.println("Don toi thieu khong duoc am.");
+            return false;
+        }
+
         if (!isValidStatus(coupon.getStatus())) {
             System.out.println("Status chi duoc la ACTIVE hoac INACTIVE.");
             return false;
@@ -162,6 +167,11 @@ public class CouponServiceImpl implements CouponService {
 
         if (coupon.getQuantity() <= 0) {
             System.out.println("So luong phai > 0.");
+            return false;
+        }
+
+        if (coupon.getMinOrderAmount() < 0) {
+            System.out.println("Don toi thieu khong duoc am.");
             return false;
         }
 

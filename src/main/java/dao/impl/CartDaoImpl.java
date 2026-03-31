@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 public class CartDaoImpl implements CartDao {
-
     private static final Map<Integer, List<CartItem>> userCarts = new HashMap<>();
 
     private List<CartItem> getUserCart(int userId) {
@@ -63,8 +62,8 @@ public class CartDaoImpl implements CartDao {
         }
 
         double total = 0;
-
         System.out.println("\n===== GIO HANG =====");
+
         for (CartItem item : cart) {
             System.out.println(
                     "ID: " + item.getProductId()
@@ -99,8 +98,10 @@ public class CartDaoImpl implements CartDao {
 
             for (CartItem item : cart) {
                 String checkStockSql = "select stock from products where product_id = ?";
+
                 try (PreparedStatement psCheck = conn.prepareStatement(checkStockSql)) {
                     psCheck.setInt(1, item.getProductId());
+
                     try (ResultSet rs = psCheck.executeQuery()) {
                         if (!rs.next()) {
                             System.out.println("San pham ID " + item.getProductId() + " khong ton tai.");
@@ -122,6 +123,7 @@ public class CartDaoImpl implements CartDao {
 
             double discountAmount = 0;
             Coupon appliedCoupon = null;
+            String normalizedCouponCode = null;
 
             if (couponCode != null && !couponCode.trim().isEmpty()) {
                 String couponSql = """
@@ -133,7 +135,8 @@ public class CartDaoImpl implements CartDao {
                         """;
 
                 try (PreparedStatement psCoupon = conn.prepareStatement(couponSql)) {
-                    psCoupon.setString(1, couponCode.trim().toUpperCase());
+                    normalizedCouponCode = couponCode.trim().toUpperCase();
+                    psCoupon.setString(1, normalizedCouponCode);
 
                     try (ResultSet rs = psCoupon.executeQuery()) {
                         if (!rs.next()) {
@@ -147,10 +150,17 @@ public class CartDaoImpl implements CartDao {
                         appliedCoupon.setCouponCode(rs.getString("code"));
                         appliedCoupon.setDiscountPercent(rs.getDouble("discount_percent"));
                         appliedCoupon.setQuantity(rs.getInt("quantity"));
+                        appliedCoupon.setMinOrderAmount(rs.getDouble("min_order_amount"));
                         appliedCoupon.setStartDate(rs.getString("start_time"));
                         appliedCoupon.setEndDate(rs.getString("end_time"));
                         appliedCoupon.setStatus(rs.getString("status"));
                     }
+                }
+
+                if (subtotal < appliedCoupon.getMinOrderAmount()) {
+                    System.out.println("Don hang chua du gia tri toi thieu de ap dung coupon.");
+                    conn.rollback();
+                    return false;
                 }
 
                 discountAmount = subtotal * appliedCoupon.getDiscountPercent() / 100.0;
@@ -161,12 +171,24 @@ public class CartDaoImpl implements CartDao {
                 finalTotal = 0;
             }
 
-            String sqlOrder = "insert into orders(user_id, total_amount, status) values (?, ?, 'PENDING')";
+            String sqlOrder = """
+                    insert into orders(user_id, total_amount, status, coupon_code, discount_amount)
+                    values (?, ?, 'PENDING', ?, ?)
+                    """;
+
             int orderId;
 
             try (PreparedStatement psOrder = conn.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS)) {
                 psOrder.setInt(1, userId);
                 psOrder.setDouble(2, finalTotal);
+
+                if (appliedCoupon != null) {
+                    psOrder.setString(3, normalizedCouponCode);
+                } else {
+                    psOrder.setNull(3, java.sql.Types.VARCHAR);
+                }
+
+                psOrder.setDouble(4, discountAmount);
                 psOrder.executeUpdate();
 
                 try (ResultSet rs = psOrder.getGeneratedKeys()) {
@@ -206,11 +228,16 @@ public class CartDaoImpl implements CartDao {
             }
 
             if (appliedCoupon != null) {
-                String sqlDecreaseCoupon = "update coupons set quantity = quantity - 1 where coupon_id = ? and quantity > 0";
+                String sqlDecreaseCoupon = """
+                        update coupons
+                        set quantity = quantity - 1
+                        where coupon_id = ? and quantity > 0
+                        """;
+
                 try (PreparedStatement psCouponUpdate = conn.prepareStatement(sqlDecreaseCoupon)) {
                     psCouponUpdate.setInt(1, appliedCoupon.getCouponId());
-                    int updated = psCouponUpdate.executeUpdate();
 
+                    int updated = psCouponUpdate.executeUpdate();
                     if (updated <= 0) {
                         System.out.println("Khong the tru so luong coupon.");
                         conn.rollback();

@@ -54,7 +54,6 @@ create table if not exists coupons (
     start_time datetime not null,
     end_time datetime not null,
     quantity int not null check (quantity >= 0),
-    used_count int not null default 0,
     min_order_amount double not null default 0,
     status enum('ACTIVE','INACTIVE') not null default 'ACTIVE'
 ) engine=InnoDB;

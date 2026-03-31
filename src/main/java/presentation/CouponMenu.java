@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CouponMenu {
-
     private final Scanner sc = new Scanner(System.in);
     private final CouponServiceImpl couponService = new CouponServiceImpl();
 
@@ -47,29 +46,28 @@ public class CouponMenu {
 
     private void showAll() {
         List<Coupon> list = couponService.getAllCoupons();
-
         if (list == null || list.isEmpty()) {
             System.out.println("Khong co coupon.");
             return;
         }
-
-        System.out.println("\n--------------------------------------------------------------------------------------------------");
-        System.out.printf("%-5s %-15s %-10s %-10s %-22s %-22s %-10s%n",
-                "ID", "Code", "%", "Qty", "Start", "End", "Status");
-        System.out.println("--------------------------------------------------------------------------------------------------");
+        System.out.println("\n------------------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("%-5s %-15s %-8s %-8s %-12s %-22s %-22s %-10s%n",
+                "ID", "Code", "%", "Qty", "MinOrder", "Start", "End", "Status");
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------");
 
         for (Coupon c : list) {
-            System.out.printf("%-5d %-15s %-10.2f %-10d %-22s %-22s %-10s%n",
+            System.out.printf("%-5d %-15s %-8.2f %-8d  %-12.2f %-22s %-22s %-10s%n",
                     c.getCouponId(),
                     c.getCouponCode(),
                     c.getDiscountPercent(),
                     c.getQuantity(),
+                    c.getMinOrderAmount(),
                     c.getStartDate(),
                     c.getEndDate(),
                     c.getStatus());
         }
 
-        System.out.println("--------------------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------");
     }
 
     private void addCoupon() {
@@ -83,6 +81,10 @@ public class CouponMenu {
 
         System.out.print("Nhap so luong: ");
         c.setQuantity(inputInt());
+
+
+        System.out.print("Nhap don toi thieu: ");
+        c.setMinOrderAmount(inputDouble());
 
         System.out.print("Nhap start_date (yyyy-MM-dd): ");
         c.setStartDate(sc.nextLine().trim() + " 00:00:00");
@@ -118,6 +120,10 @@ public class CouponMenu {
 
         System.out.print("Nhap so luong moi: ");
         c.setQuantity(inputInt());
+
+
+        System.out.print("Nhap don toi thieu moi: ");
+        c.setMinOrderAmount(inputDouble());
 
         System.out.print("Nhap start_date moi (yyyy-MM-dd): ");
         c.setStartDate(sc.nextLine().trim() + " 00:00:00");

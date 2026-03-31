@@ -5,6 +5,7 @@ public class Coupon {
     private String couponCode;
     private double discountPercent;
     private int quantity;
+    private double minOrderAmount;
     private String startDate;
     private String endDate;
     private String status;
@@ -13,11 +14,13 @@ public class Coupon {
     }
 
     public Coupon(int couponId, String couponCode, double discountPercent, int quantity,
+                   double minOrderAmount,
                   String startDate, String endDate, String status) {
         this.couponId = couponId;
         this.couponCode = couponCode;
         this.discountPercent = discountPercent;
         this.quantity = quantity;
+        this.minOrderAmount = minOrderAmount;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
@@ -53,6 +56,16 @@ public class Coupon {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+
+
+    public double getMinOrderAmount() {
+        return minOrderAmount;
+    }
+
+    public void setMinOrderAmount(double minOrderAmount) {
+        this.minOrderAmount = minOrderAmount;
     }
 
     public String getStartDate() {
