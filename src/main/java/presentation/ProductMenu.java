@@ -73,7 +73,6 @@ public class ProductMenu {
             System.out.print("Nhap trang (1 - " + totalPages + "): ");
             page = inputInt();
         } while (page < 1 || page > totalPages);
-
         List<Product> list = productService.getAll(page, PAGE_SIZE);
         showList(list);
         System.out.println("Trang " + page + "/" + totalPages);
