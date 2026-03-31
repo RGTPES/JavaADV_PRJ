@@ -107,9 +107,9 @@ public class CouponDAOImpl implements CouponDAO {
     @Override
     public boolean insert(Coupon coupon) {
         String sql = """
-                insert into coupons(coupon_code, discount_percent, quantity, start_date, end_date, status)
-                values (?, ?, ?, ?, ?, ?)
-                """;
+        insert into coupons(coupon_code, discount_percent, quantity, end_date, status)
+        values (?, ?, ?, ?, ?)
+        """;
 
         try (
                 Connection conn = DBConnection.getInstance().getConnection();
@@ -118,9 +118,8 @@ public class CouponDAOImpl implements CouponDAO {
             ps.setString(1, coupon.getCouponCode().trim().toUpperCase());
             ps.setDouble(2, coupon.getDiscountPercent());
             ps.setInt(3, coupon.getQuantity());
-            ps.setString(4, coupon.getStartDate());
-            ps.setString(5, coupon.getEndDate());
-            ps.setString(6, coupon.getStatus().trim().toUpperCase());
+            ps.setString(4, coupon.getEndDate());
+            ps.setString(5, coupon.getStatus().trim().toUpperCase());
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {

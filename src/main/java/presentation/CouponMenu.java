@@ -82,11 +82,8 @@ public class CouponMenu {
         System.out.print("Nhap so luong: ");
         c.setQuantity(inputInt());
 
-        System.out.print("Nhap start_date (yyyy-MM-dd HH:mm:ss): ");
-        c.setStartDate(sc.nextLine().trim());
-
-        System.out.print("Nhap end_date (yyyy-MM-dd HH:mm:ss): ");
-        c.setEndDate(sc.nextLine().trim());
+        System.out.print("Nhap end_date (yyyy-MM-dd): ");
+        c.setEndDate(sc.nextLine().trim() + " 00:00:00");
 
         System.out.print("Nhap status (ACTIVE/INACTIVE): ");
         c.setStatus(sc.nextLine().trim().toUpperCase());
@@ -117,11 +114,11 @@ public class CouponMenu {
         System.out.print("Nhap so luong moi: ");
         c.setQuantity(inputInt());
 
-        System.out.print("Nhap start_date moi (yyyy-MM-dd HH:mm:ss): ");
-        c.setStartDate(sc.nextLine().trim());
+        System.out.print("Nhap start_date moi (yyyy-MM-dd): ");
+        c.setStartDate(sc.nextLine().trim() + " 00:00:00");
 
-        System.out.print("Nhap end_date moi (yyyy-MM-dd HH:mm:ss): ");
-        c.setEndDate(sc.nextLine().trim());
+        System.out.print("Nhap end_date moi (yyyy-MM-dd): ");
+        c.setEndDate(sc.nextLine().trim() + " 00:00:00");
 
         System.out.print("Nhap status moi (ACTIVE/INACTIVE): ");
         c.setStatus(sc.nextLine().trim().toUpperCase());
