@@ -1,14 +1,17 @@
 package presentation;
 
-import model.CartItem;
+import model.Coupon;
 import model.Order;
 import model.Product;
 import model.Users;
 import service.impl.CartServiceImpl;
+import service.impl.CouponServiceImpl;
 import service.impl.OrderServiceImpl;
 import service.impl.ProductServiceImpl;
 import util.InputUtil;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -18,12 +21,16 @@ public class CustomerMenu {
     private final ProductServiceImpl productService;
     private final CartServiceImpl cartService;
     private final OrderServiceImpl orderService;
+    private final CouponServiceImpl couponService;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public CustomerMenu() {
         productMenu = new ProductMenu();
         productService = new ProductServiceImpl();
         cartService = new CartServiceImpl();
         orderService = new OrderServiceImpl();
+        couponService = new CouponServiceImpl();
     }
 
     public void show(Users user) {
@@ -125,17 +132,84 @@ public class CustomerMenu {
         }
 
         cartService.viewCart(user.getUserId());
+        showAvailableCoupons();
+
+        System.out.print("Nhap ma coupon neu co (bo trong neu khong): ");
+        String couponCode = sc.nextLine().trim();
+        if (couponCode.isEmpty()) {
+            couponCode = null;
+        }
+
         boolean confirm = InputUtil.inputYesNo("Ban co chac muon dat hang khong?");
         if (!confirm) {
             System.out.println("Da huy dat hang.");
             return;
         }
 
-        cartService.checkout(user.getUserId());
+        boolean result = cartService.checkout(user.getUserId(), couponCode);
+        System.out.println(result ? "Dat hang thanh cong!" : "Dat hang that bai!");
+    }
+
+    private void showAvailableCoupons() {
+        List<Coupon> coupons = couponService.getAllCoupons();
+        if (coupons == null || coupons.isEmpty()) {
+            System.out.println("\nKhong co coupon nao.");
+            return;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        boolean hasValidCoupon = false;
+
+        System.out.println("\n================ DANH SACH COUPON CO THE SU DUNG ================");
+        System.out.printf("%-5s %-15s %-12s %-10s %-22s %-22s %-10s%n",
+                "ID", "Code", "Discount", "Qty", "Start", "End", "Status");
+        System.out.println("-----------------------------------------------------------------------------------------------");
+
+        for (Coupon c : coupons) {
+            if (c == null) {
+                continue;
+            }
+
+            if (c.getStatus() == null || !c.getStatus().equalsIgnoreCase("ACTIVE")) {
+                continue;
+            }
+
+            if (c.getQuantity() <= 0) {
+                continue;
+            }
+
+            try {
+                LocalDateTime start = LocalDateTime.parse(c.getStartDate(), FORMATTER);
+                LocalDateTime end = LocalDateTime.parse(c.getEndDate(), FORMATTER);
+
+                if (now.isBefore(start) || now.isAfter(end)) {
+                    continue;
+                }
+
+                hasValidCoupon = true;
+                System.out.printf("%-5d %-15s %-12.2f %-10d %-22s %-22s %-10s%n",
+                        c.getCouponId(),
+                        c.getCouponCode(),
+                        c.getDiscountPercent(),
+                        c.getQuantity(),
+                        c.getStartDate(),
+                        c.getEndDate(),
+                        c.getStatus());
+            } catch (Exception e) {
+                System.out.println("Coupon loi du lieu, bo qua: " + c.getCouponCode());
+            }
+        }
+
+        if (!hasValidCoupon) {
+            System.out.println("Khong co coupon hop le o thoi diem hien tai.");
+        }
+
+        System.out.println("-----------------------------------------------------------------------------------------------");
     }
 
     private void searchAdvancedForCustomer() {
         System.out.println("\n----- Tim kiem nang cao -----");
+
         System.out.print("Nhap tu khoa ten san pham (bo trong neu khong loc): ");
         String keyword = sc.nextLine().trim();
         if (keyword.isEmpty()) {
@@ -161,6 +235,7 @@ public class CustomerMenu {
 
     private void showMyOrders(Users user) {
         List<Order> orders = orderService.getOrdersByUserId(user.getUserId());
+
         if (orders == null || orders.isEmpty()) {
             System.out.println("Ban chua co don hang nao.");
             return;
@@ -186,6 +261,7 @@ public class CustomerMenu {
 
     private void showOrderDetail(Users user) {
         List<Order> orders = orderService.getOrdersByUserId(user.getUserId());
+
         if (orders == null || orders.isEmpty()) {
             System.out.println("Ban chua co don hang nao.");
             return;
@@ -257,6 +333,7 @@ public class CustomerMenu {
         while (true) {
             System.out.print(message);
             String value = sc.nextLine().trim().toLowerCase();
+
             if (value.isEmpty()) {
                 return null;
             }
@@ -266,6 +343,7 @@ public class CustomerMenu {
             if (value.equals("n")) {
                 return false;
             }
+
             System.out.println("Chi nhap y, n hoac Enter.");
         }
     }

@@ -27,7 +27,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void checkout(int userId) {
-        cartDao.checkout(userId);
+    public boolean checkout(int userId, String couponCode) {
+        return cartDao.checkout(userId, couponCode);
     }
 }

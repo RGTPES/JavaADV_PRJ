@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CouponMenu {
+
     private final Scanner sc = new Scanner(System.in);
     private final CouponServiceImpl couponService = new CouponServiceImpl();
 
@@ -46,6 +47,7 @@ public class CouponMenu {
 
     private void showAll() {
         List<Coupon> list = couponService.getAllCoupons();
+
         if (list == null || list.isEmpty()) {
             System.out.println("Khong co coupon.");
             return;
@@ -82,8 +84,11 @@ public class CouponMenu {
         System.out.print("Nhap so luong: ");
         c.setQuantity(inputInt());
 
+        System.out.print("Nhap start_date (yyyy-MM-dd): ");
+        c.setStartDate(sc.nextLine().trim() + " 00:00:00");
+
         System.out.print("Nhap end_date (yyyy-MM-dd): ");
-        c.setEndDate(sc.nextLine().trim() + " 00:00:00");
+        c.setEndDate(sc.nextLine().trim() + " 23:59:59");
 
         System.out.print("Nhap status (ACTIVE/INACTIVE): ");
         c.setStatus(sc.nextLine().trim().toUpperCase());
@@ -118,7 +123,7 @@ public class CouponMenu {
         c.setStartDate(sc.nextLine().trim() + " 00:00:00");
 
         System.out.print("Nhap end_date moi (yyyy-MM-dd): ");
-        c.setEndDate(sc.nextLine().trim() + " 00:00:00");
+        c.setEndDate(sc.nextLine().trim() + " 23:59:59");
 
         System.out.print("Nhap status moi (ACTIVE/INACTIVE): ");
         c.setStatus(sc.nextLine().trim().toUpperCase());

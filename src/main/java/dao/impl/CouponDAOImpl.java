@@ -56,7 +56,7 @@ public class CouponDAOImpl implements CouponDAO {
 
     @Override
     public Coupon findByCode(String code) {
-        String sql = "select * from coupons where coupon_code = ?";
+        String sql = "select * from coupons where code = ?";
 
         try (
                 Connection conn = DBConnection.getInstance().getConnection();
@@ -80,10 +80,10 @@ public class CouponDAOImpl implements CouponDAO {
     public Coupon findValidByCode(String code) {
         String sql = """
                 select * from coupons
-                where coupon_code = ?
+                where code = ?
                   and status = 'ACTIVE'
                   and quantity > 0
-                  and now() between start_date and end_date
+                  and now() between start_time and end_time
                 """;
 
         try (
@@ -107,9 +107,9 @@ public class CouponDAOImpl implements CouponDAO {
     @Override
     public boolean insert(Coupon coupon) {
         String sql = """
-        insert into coupons(coupon_code, discount_percent, quantity, end_date, status)
-        values (?, ?, ?, ?, ?)
-        """;
+                insert into coupons(code, discount_percent, quantity, start_time, end_time, status)
+                values (?, ?, ?, ?, ?, ?)
+                """;
 
         try (
                 Connection conn = DBConnection.getInstance().getConnection();
@@ -118,8 +118,9 @@ public class CouponDAOImpl implements CouponDAO {
             ps.setString(1, coupon.getCouponCode().trim().toUpperCase());
             ps.setDouble(2, coupon.getDiscountPercent());
             ps.setInt(3, coupon.getQuantity());
-            ps.setString(4, coupon.getEndDate());
-            ps.setString(5, coupon.getStatus().trim().toUpperCase());
+            ps.setString(4, coupon.getStartDate());
+            ps.setString(5, coupon.getEndDate());
+            ps.setString(6, coupon.getStatus().trim().toUpperCase());
 
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -133,7 +134,7 @@ public class CouponDAOImpl implements CouponDAO {
     public boolean update(Coupon coupon) {
         String sql = """
                 update coupons
-                set coupon_code = ?, discount_percent = ?, quantity = ?, start_date = ?, end_date = ?, status = ?
+                set code = ?, discount_percent = ?, quantity = ?, start_time = ?, end_time = ?, status = ?
                 where coupon_id = ?
                 """;
 
@@ -191,11 +192,11 @@ public class CouponDAOImpl implements CouponDAO {
     private Coupon map(ResultSet rs) throws Exception {
         Coupon c = new Coupon();
         c.setCouponId(rs.getInt("coupon_id"));
-        c.setCouponCode(rs.getString("coupon_code"));
+        c.setCouponCode(rs.getString("code"));
         c.setDiscountPercent(rs.getDouble("discount_percent"));
         c.setQuantity(rs.getInt("quantity"));
-        c.setStartDate(rs.getString("start_date"));
-        c.setEndDate(rs.getString("end_date"));
+        c.setStartDate(rs.getString("start_time"));
+        c.setEndDate(rs.getString("end_time"));
         c.setStatus(rs.getString("status"));
         return c;
     }

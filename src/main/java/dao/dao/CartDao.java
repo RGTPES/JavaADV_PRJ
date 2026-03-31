@@ -9,5 +9,5 @@ public interface CartDao {
     boolean addToCart(int userId, Product p, int quantity);
     boolean cartIsEmpty(int userId);
     List<CartItem> viewCart(int userId);
-    void checkout(int userId);
+    boolean checkout(int userId, String couponCode);
 }
