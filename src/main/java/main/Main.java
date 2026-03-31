@@ -32,6 +32,7 @@ public class Main {
                         if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                             adminMenu.show(user);
                         } else {
+                            CustomerMenu customerMenu = new CustomerMenu();
                             customerMenu.show(user);
                         }
                     }

@@ -1,5 +1,6 @@
 package presentation;
 
+import model.CartItem;
 import model.Order;
 import model.Product;
 import model.Users;
@@ -48,10 +49,10 @@ public class CustomerMenu {
                     showProducts();
                     break;
                 case 2:
-                    addToCart();
+                    addToCart(user);
                     break;
                 case 3:
-                    viewCart();
+                    viewCart(user);
                     break;
                 case 4:
                     checkout(user);
@@ -85,7 +86,7 @@ public class CustomerMenu {
         productMenu.showListHaveProduct(list);
     }
 
-    private void addToCart() {
+    private void addToCart(Users user) {
         int productId = inputInt("Nhap ID san pham: ");
         int quantity = inputInt("Nhap so luong: ");
 
@@ -105,25 +106,25 @@ public class CustomerMenu {
             return;
         }
 
-        boolean result = cartService.addToCart(product, quantity);
+        boolean result = cartService.addToCart(user.getUserId(), product, quantity);
         System.out.println(result ? "Them vao gio hang thanh cong!" : "Them vao gio hang that bai!");
     }
 
-    private void viewCart() {
-        if (cartService.cartIsEmpty()) {
+    private void viewCart(Users user) {
+        if (cartService.cartIsEmpty(user.getUserId())) {
             System.out.println("Gio hang dang rong!");
             return;
         }
-        cartService.viewCart();
+        cartService.viewCart(user.getUserId());
     }
 
     private void checkout(Users user) {
-        if (cartService.cartIsEmpty()) {
+        if (cartService.cartIsEmpty(user.getUserId())) {
             System.out.println("Gio hang dang rong!");
             return;
         }
 
-        cartService.viewCart();
+        cartService.viewCart(user.getUserId());
         boolean confirm = InputUtil.inputYesNo("Ban co chac muon dat hang khong?");
         if (!confirm) {
             System.out.println("Da huy dat hang.");
@@ -135,7 +136,6 @@ public class CustomerMenu {
 
     private void searchAdvancedForCustomer() {
         System.out.println("\n----- Tim kiem nang cao -----");
-
         System.out.print("Nhap tu khoa ten san pham (bo trong neu khong loc): ");
         String keyword = sc.nextLine().trim();
         if (keyword.isEmpty()) {
@@ -154,20 +154,13 @@ public class CustomerMenu {
         }
 
         List<Product> list = productService.searchAdvanced(
-                keyword,
-                minPrice,
-                maxPrice,
-                categoryId,
-                inStock,
-                sortByPrice
+                keyword, minPrice, maxPrice, categoryId, inStock, sortByPrice
         );
-
         productMenu.showListHaveProduct(list);
     }
 
     private void showMyOrders(Users user) {
         List<Order> orders = orderService.getOrdersByUserId(user.getUserId());
-
         if (orders == null || orders.isEmpty()) {
             System.out.println("Ban chua co don hang nao.");
             return;
@@ -193,7 +186,6 @@ public class CustomerMenu {
 
     private void showOrderDetail(Users user) {
         List<Order> orders = orderService.getOrdersByUserId(user.getUserId());
-
         if (orders == null || orders.isEmpty()) {
             System.out.println("Ban chua co don hang nao.");
             return;
@@ -265,7 +257,6 @@ public class CustomerMenu {
         while (true) {
             System.out.print(message);
             String value = sc.nextLine().trim().toLowerCase();
-
             if (value.isEmpty()) {
                 return null;
             }
@@ -275,7 +266,6 @@ public class CustomerMenu {
             if (value.equals("n")) {
                 return false;
             }
-
             System.out.println("Chi nhap y, n hoac Enter.");
         }
     }

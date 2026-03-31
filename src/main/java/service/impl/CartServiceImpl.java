@@ -10,18 +10,22 @@ import java.util.List;
 
 public class CartServiceImpl implements CartService {
     private final CartDao cartDao = new CartDaoImpl();
+
     @Override
-    public boolean addToCart(Product p, int quantity) {
-        return cartDao.addToCart(p, quantity);
+    public boolean addToCart(int userId, Product p, int quantity) {
+        return cartDao.addToCart(userId, p, quantity);
     }
+
     @Override
-    public boolean cartIsEmpty(){
-        return cartDao.cartIsEmpty();
+    public boolean cartIsEmpty(int userId) {
+        return cartDao.cartIsEmpty(userId);
     }
+
     @Override
-    public List<CartItem> viewCart() {
-        return cartDao.viewCart();
+    public List<CartItem> viewCart(int userId) {
+        return cartDao.viewCart(userId);
     }
+
     @Override
     public void checkout(int userId) {
         cartDao.checkout(userId);

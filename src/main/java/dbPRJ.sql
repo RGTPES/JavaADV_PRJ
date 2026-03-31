@@ -81,15 +81,11 @@ create table if not exists order_details (
         foreign key (order_id) references orders(order_id),
     constraint fk_order_details_products
         foreign key (product_id) references products(product_id)
-) engine=InnoDB;
-	
-insert into users (full_name, email, phone, password, address, role, status)
-values
-(' Admin', 'admin1@gmail.com', '0900001', '123456', 'Ha Noi', 'ADMIN', 'ACTIVE');
+) engine=InnoDB;	
 insert into categories (  category_name , description , status ) values 
 ("Apple","Hang apple" , "ACTIVE"),("SamSung","Hang SamSung","ACTIVE");
 desc users;
 select * from categories;
-	
+select * from products;
 select * from users;
 
