@@ -35,25 +35,28 @@ create table if not exists products (
         foreign key (category_id) references categories(category_id)
 ) engine=InnoDB;
 
-create table if not exists coupons (
-    coupon_id int auto_increment primary key,
-    code varchar(50) not null unique,
-    discount_percent double not null check (discount_percent > 0 and discount_percent <= 100),
-    quantity int not null default 0 check (quantity >= 0),
-    start_date datetime,
-    end_date datetime,
-    status enum('ACTIVE', 'EXPIRED') not null default 'ACTIVE'
-) engine=InnoDB;
-
 create table if not exists flash_sales (
     flash_sale_id int auto_increment primary key,
     product_id int not null,
     discount_percent double not null check (discount_percent > 0 and discount_percent <= 100),
-    start_time datetime,
-    end_time datetime,
-    status enum('ACTIVE', 'INACTIVE') not null default 'ACTIVE',
-    constraint fk_flash_sales_products
-        foreign key (product_id) references products(product_id)
+    start_time datetime not null,
+    end_time datetime not null,
+    max_quantity int not null check (max_quantity > 0),
+    sold_quantity int not null default 0,
+    status enum('ACTIVE','INACTIVE') not null default 'ACTIVE',
+    foreign key (product_id) references products(product_id)
+) engine=InnoDB;
+
+create table if not exists coupons (
+    coupon_id int auto_increment primary key,
+    code varchar(50) not null unique,
+    discount_percent double not null check (discount_percent > 0 and discount_percent <= 100),
+    start_time datetime not null,
+    end_time datetime not null,
+    quantity int not null check (quantity >= 0),
+    used_count int not null default 0,
+    min_order_amount double not null default 0,
+    status enum('ACTIVE','INACTIVE') not null default 'ACTIVE'
 ) engine=InnoDB;
 
 create table if not exists orders (
@@ -62,6 +65,8 @@ create table if not exists orders (
     total_amount double not null default 0 check (total_amount >= 0),
     status enum('PENDING', 'SHIPPING', 'DELIVERED', 'CANCELLED') not null default 'PENDING',
     created_at datetime default current_timestamp,
+    coupon_code varchar(50) null,
+	discount_amount double not null default 0,
     constraint fk_orders_users
         foreign key (user_id) references users(user_id)
 ) engine=InnoDB;
@@ -80,11 +85,11 @@ create table if not exists order_details (
 	
 insert into users (full_name, email, phone, password, address, role, status)
 values
-('Nguyen Van Admin', 'admin@gmail.com', '0900000001', '$2a$10$adminhashedpasswordexample', 'Ha Noi', 'ADMIN', 'ACTIVE'),
-('Nguyen Van A', 'a@gmail.com', '0900000002', '$2a$10$customerhashedpasswordexample', 'Ha Noi', 'CUSTOMER', 'ACTIVE'),
-('Tran Thi B', 'b@gmail.com', '0900000003', '$2a$10$customerhashedpasswordexample2', 'Hai Phong', 'CUSTOMER', 'ACTIVE');
+(' Admin', 'admin1@gmail.com', '0900001', '123456', 'Ha Noi', 'ADMIN', 'ACTIVE');
 insert into categories (  category_name , description , status ) values 
 ("Apple","Hang apple" , "ACTIVE"),("SamSung","Hang SamSung","ACTIVE");
 desc users;
 select * from categories;
+	
+select * from users;
 

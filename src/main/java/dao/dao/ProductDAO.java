@@ -1,7 +1,6 @@
 package dao.dao;
 
 import model.Product;
-
 import java.util.List;
 
 public interface ProductDAO {
@@ -24,5 +23,17 @@ public interface ProductDAO {
     List<Product> sortByPriceAsc();
 
     List<Product> sortByPriceDesc();
+
     List<Product> getAllProducts();
+    List<Product> searchAdvanced(String keyword,
+                                 Double minPrice,
+                                 Double maxPrice,
+                                 Integer categoryId,
+                                 Boolean inStock,
+                                 String sortByPrice);
+//    List<Product> findAvailableProducts();
+//
+//    List<Product> filterByCategory(int categoryId);
+//
+//    List<Product> filterByPrice(double minPrice, double maxPrice);
 }

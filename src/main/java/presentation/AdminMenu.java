@@ -5,10 +5,14 @@ import model.Users;
 public class AdminMenu {
     private final ProductMenu productMenu;
     private final OrderMenu orderMenu;
+    private final CouponMenu couponMenu;
+    private final ReportMenu reportMenu;
 
     public AdminMenu() {
         productMenu = new ProductMenu();
         orderMenu = new OrderMenu();
+        couponMenu = new CouponMenu();
+        reportMenu = new ReportMenu();
     }
 
     public void show(Users user) {
@@ -18,6 +22,8 @@ public class AdminMenu {
             System.out.println("Xin chao: " + user.getFullName());
             System.out.println("1. Quan ly san pham");
             System.out.println("2. Quan ly don hang");
+            System.out.println("3. Quan ly coupon");
+            System.out.println("4. Top 5 san pham ban chay nhat thang");
             System.out.println("0. Dang xuat");
             System.out.print("Chon: ");
 
@@ -29,6 +35,12 @@ public class AdminMenu {
                     break;
                 case 2:
                     orderMenu.displayMenu();
+                    break;
+                case 3:
+                    couponMenu.displayMenu();
+                    break;
+                case 4:
+                    reportMenu.showTop5BestSellingProductsThisMonth();
                     break;
                 case 0:
                     System.out.println("Dang xuat thanh cong.");

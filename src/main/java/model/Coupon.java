@@ -2,24 +2,25 @@ package model;
 
 public class Coupon {
     private int couponId;
-    private String code;
+    private String couponCode;
     private double discountPercent;
     private int quantity;
     private String startDate;
     private String endDate;
     private String status;
 
-    public Coupon(int couponId, String code, double discountPercent, int quantity, String startDate, String endDate, String status) {
+    public Coupon() {
+    }
+
+    public Coupon(int couponId, String couponCode, double discountPercent, int quantity,
+                  String startDate, String endDate, String status) {
         this.couponId = couponId;
-        this.code = code;
+        this.couponCode = couponCode;
         this.discountPercent = discountPercent;
         this.quantity = quantity;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
-    }
-
-    public Coupon() {
     }
 
     public int getCouponId() {
@@ -30,12 +31,12 @@ public class Coupon {
         this.couponId = couponId;
     }
 
-    public String getCode() {
-        return code;
+    public String getCouponCode() {
+        return couponCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setCouponCode(String couponCode) {
+        this.couponCode = couponCode;
     }
 
     public double getDiscountPercent() {

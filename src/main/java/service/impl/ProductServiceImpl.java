@@ -1,4 +1,5 @@
 package service.impl;
+
 import dao.dao.ProductDAO;
 import dao.impl.ProductDAOImpl;
 import model.Product;
@@ -6,16 +7,19 @@ import service.service.ProductService;
 import util.ValidationUtil;
 
 import java.util.List;
+
 public class ProductServiceImpl implements ProductService {
     private final ProductDAO productDAO = new ProductDAOImpl();
-@Override
+
+    @Override
     public List<Product> getAll(int page, int pageSize) {
         if (page <= 0 || pageSize <= 0) {
             return List.of();
         }
         return productDAO.findAll(page, pageSize);
     }
-@Override
+
+    @Override
     public int getTotalPages(int pageSize) {
         if (pageSize <= 0) {
             return 0;
@@ -23,18 +27,21 @@ public class ProductServiceImpl implements ProductService {
         int total = productDAO.countActiveProducts();
         return (int) Math.ceil((double) total / pageSize);
     }
-@Override
+
+    @Override
     public Product findById(int id) {
         return productDAO.findById(id);
     }
-@Override
+
+    @Override
     public boolean addProduct(Product p) {
         if (!isValidProduct(p)) {
             return false;
         }
         return productDAO.insert(p);
     }
-@Override
+
+    @Override
     public boolean updateProduct(Product p) {
         if (p == null || p.getProductId() <= 0) {
             return false;
@@ -44,37 +51,69 @@ public class ProductServiceImpl implements ProductService {
         }
         return productDAO.update(p);
     }
-@Override
+
+    @Override
     public boolean deleteProduct(int id) {
         if (id <= 0) {
             return false;
         }
         return productDAO.softDelete(id);
     }
-@Override
+
+    @Override
     public List<Product> searchByName(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
             return List.of();
         }
         return productDAO.searchByName(keyword.trim());
     }
-@Override
+
+    @Override
     public List<Product> sortByPriceAsc() {
         return productDAO.sortByPriceAsc();
     }
-@Override
-public List<Product> getAllProducts(){
-    return productDAO.getAllProducts();
 
-}
-@Override
+    @Override
     public List<Product> sortByPriceDesc() {
         return productDAO.sortByPriceDesc();
     }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productDAO.getAllProducts();
+    }
+
+    @Override
+    public List<Product> searchAdvanced(String keyword,
+                                        Double minPrice,
+                                        Double maxPrice,
+                                        Integer categoryId,
+                                        Boolean inStock,
+                                        String sortByPrice) {
+        if (minPrice != null && minPrice < 0) {
+            return List.of();
+        }
+
+        if (maxPrice != null && maxPrice < 0) {
+            return List.of();
+        }
+
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            return List.of();
+        }
+
+        if (categoryId != null && categoryId <= 0) {
+            categoryId = null;
+        }
+
+        return productDAO.searchAdvanced(keyword, minPrice, maxPrice, categoryId, inStock, sortByPrice);
+    }
+
     private boolean isValidProduct(Product p) {
         if (p == null) {
             return false;
         }
+
         if (ValidationUtil.isEmpty(p.getProductName())
                 || ValidationUtil.isEmpty(p.getStorage())
                 || ValidationUtil.isEmpty(p.getColor())
@@ -92,5 +131,4 @@ public List<Product> getAllProducts(){
 
         return p.getCategoryId() > 0;
     }
-
 }

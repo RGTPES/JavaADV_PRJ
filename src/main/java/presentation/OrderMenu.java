@@ -21,6 +21,7 @@ public class OrderMenu {
             System.out.println("2. Tim don hang theo trang thai");
             System.out.println("3. Cap nhat trang thai don hang");
             System.out.println("0. Quay lai");
+
             choice = inputInt("Chon chuc nang: ");
 
             switch (choice) {
@@ -47,14 +48,19 @@ public class OrderMenu {
     }
 
     private void showOrdersByStatus() {
-        String status = InputUtil.inputString("Nhap trang thai (PENDING/SHIPPING/DELIVERED/CANCELLED): ").trim().toUpperCase();
+        String status = InputUtil.inputString("Nhap trang thai (PENDING/SHIPPING/DELIVERED/CANCELLED): ")
+                .trim()
+                .toUpperCase();
+
         List<Order> orders = orderService.getOrdersByStatus(status);
         showOrderList(orders);
     }
 
     private void updateOrderStatus() {
         int orderId = inputInt("Nhap ma don hang: ");
-        String newStatus = InputUtil.inputString("Nhap trang thai moi (PENDING/SHIPPING/DELIVERED/CANCELLED): ").trim().toUpperCase();
+        String newStatus = InputUtil.inputString("Nhap trang thai moi (PENDING/SHIPPING/DELIVERED/CANCELLED): ")
+                .trim()
+                .toUpperCase();
 
         boolean success = orderService.updateOrderStatus(orderId, newStatus);
         if (success) {
@@ -62,6 +68,11 @@ public class OrderMenu {
         } else {
             System.out.println("Cap nhat that bai. Kiem tra ma don hang hoac quy tac chuyen trang thai.");
         }
+    }
+
+    public void showMyOrders(int userId) {
+        List<Order> orders = orderService.getOrdersByUserId(userId);
+        showOrderList(orders);
     }
 
     private void showOrderList(List<Order> orders) {

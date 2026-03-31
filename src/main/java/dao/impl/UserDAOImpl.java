@@ -4,13 +4,10 @@ package dao.impl;
 import dao.dao.UserDao;
 import model.Users;
 import util.DBConnection;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 public class UserDAOImpl implements UserDao {
-
     @Override
     public boolean register(Users user) {
         String sql = "insert into users(full_name, email, phone, password, address, role, status) " +

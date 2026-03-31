@@ -41,7 +41,30 @@ public class OrderDAOImpl implements OrderDAO {
                 Connection conn = DBConnection.getInstance().getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)
         ) {
-            ps.setString(1, status.toUpperCase());
+            ps.setString(1, status.trim().toUpperCase());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapResultSet(rs));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<Order> findByUserId(int userId) {
+        List<Order> list = new ArrayList<>();
+        String sql = "select * from orders where user_id = ? order by created_at desc, order_id desc";
+
+        try (
+                Connection conn = DBConnection.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setInt(1, userId);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -85,9 +108,8 @@ public class OrderDAOImpl implements OrderDAO {
                 Connection conn = DBConnection.getInstance().getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)
         ) {
-            ps.setString(1, status.toUpperCase());
+            ps.setString(1, status.trim().toUpperCase());
             ps.setInt(2, orderId);
-
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
