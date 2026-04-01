@@ -43,13 +43,11 @@ public class OrderServiceImpl implements OrderService {
 
         String nextStatus = newStatus.trim().toUpperCase();
         Order currentOrder = orderDAO.findById(orderId);
-
         if (currentOrder == null) {
             return false;
         }
 
         String currentStatus = currentOrder.getStatus().trim().toUpperCase();
-
         if (!isValidTransition(currentStatus, nextStatus)) {
             return false;
         }
@@ -59,63 +57,13 @@ public class OrderServiceImpl implements OrderService {
             conn = DBConnection.getInstance().getConnection();
             conn.setAutoCommit(false);
 
-            if (currentStatus.equals("PENDING") && nextStatus.equals("SHIPPING")) {
+            // vi kho da tru ngay khi checkout
+            // nen chi can cong lai kho neu don bi huy
+            if ((currentStatus.equals("PENDING") || currentStatus.equals("SHIPPING"))
+                    && nextStatus.equals("CANCELLED")) {
+
                 String sqlDetail = "select product_id, quantity from order_details where order_id = ?";
                 try (PreparedStatement ps = conn.prepareStatement(sqlDetail)) {
-                    ps.setInt(1, orderId);
-
-                    try (ResultSet rs = ps.executeQuery()) {
-                        while (rs.next()) {
-                            int productId = rs.getInt("product_id");
-                            int quantity = rs.getInt("quantity");
-
-                            String checkStockSql = "select stock from products where product_id = ? and status = 'ACTIVE'";
-                            try (PreparedStatement psCheck = conn.prepareStatement(checkStockSql)) {
-                                psCheck.setInt(1, productId);
-
-                                try (ResultSet rsStock = psCheck.executeQuery()) {
-                                    if (!rsStock.next()) {
-                                        conn.rollback();
-                                        return false;
-                                    }
-
-                                    int stock = rsStock.getInt("stock");
-                                    if (stock < quantity) {
-                                        conn.rollback();
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                try (PreparedStatement ps = conn.prepareStatement("select product_id, quantity from order_details where order_id = ?")) {
-                    ps.setInt(1, orderId);
-
-                    try (ResultSet rs = ps.executeQuery()) {
-                        while (rs.next()) {
-                            int productId = rs.getInt("product_id");
-                            int quantity = rs.getInt("quantity");
-
-                            String decreaseSql = "update products set stock = stock - ? where product_id = ? and stock >= ?";
-                            try (PreparedStatement psUpdate = conn.prepareStatement(decreaseSql)) {
-                                psUpdate.setInt(1, quantity);
-                                psUpdate.setInt(2, productId);
-                                psUpdate.setInt(3, quantity);
-
-                                if (psUpdate.executeUpdate() == 0) {
-                                    conn.rollback();
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (currentStatus.equals("SHIPPING") && nextStatus.equals("CANCELLED")) {
-                try (PreparedStatement ps = conn.prepareStatement("select product_id, quantity from order_details where order_id = ?")) {
                     ps.setInt(1, orderId);
 
                     try (ResultSet rs = ps.executeQuery()) {
@@ -151,7 +99,6 @@ public class OrderServiceImpl implements OrderService {
 
             conn.commit();
             return true;
-
         } catch (Exception e) {
             e.printStackTrace();
             try {
@@ -178,19 +125,14 @@ public class OrderServiceImpl implements OrderService {
         if (status == null) {
             return false;
         }
-
         String s = status.trim().toUpperCase();
-        return s.equals("PENDING")
-                || s.equals("SHIPPING")
-                || s.equals("DELIVERED")
-                || s.equals("CANCELLED");
+        return s.equals("PENDING") || s.equals("SHIPPING") || s.equals("DELIVERED") || s.equals("CANCELLED");
     }
 
     private boolean isValidTransition(String currentStatus, String newStatus) {
         if (currentStatus.equals(newStatus)) {
             return true;
         }
-
         switch (currentStatus) {
             case "PENDING":
                 return newStatus.equals("SHIPPING") || newStatus.equals("CANCELLED");

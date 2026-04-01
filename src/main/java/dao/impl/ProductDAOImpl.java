@@ -226,34 +226,27 @@ public class ProductDAOImpl implements ProductDAO {
                                         Boolean inStock,
                                         String sortByPrice) {
         List<Product> list = new ArrayList<>();
-
         StringBuilder sql = new StringBuilder("select * from products where status = 'ACTIVE'");
         List<Object> params = new ArrayList<>();
-
         if (keyword != null && !keyword.trim().isEmpty()) {
             sql.append(" and product_name like ?");
             params.add("%" + keyword.trim() + "%");
         }
-
         if (minPrice != null) {
             sql.append(" and price >= ?");
             params.add(minPrice);
         }
-
         if (maxPrice != null) {
             sql.append(" and price <= ?");
             params.add(maxPrice);
         }
-
         if (categoryId != null && categoryId > 0) {
             sql.append(" and category_id = ?");
             params.add(categoryId);
         }
-
         if (inStock != null && inStock) {
             sql.append(" and stock > 0");
         }
-
         sql.append(" order by ");
         if ("DESC".equalsIgnoreCase(sortByPrice)) {
             sql.append("price desc, product_id desc");
@@ -262,7 +255,6 @@ public class ProductDAOImpl implements ProductDAO {
         } else {
             sql.append("product_id asc");
         }
-
         try (
                 Connection conn = DBConnection.getInstance().getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql.toString())
@@ -293,7 +285,6 @@ public class ProductDAOImpl implements ProductDAO {
     private List<Product> getSortedProducts(String order) {
         List<Product> list = new ArrayList<>();
         String sql = "select * from products where status = 'ACTIVE' order by price " + order;
-
         try (
                 Connection conn = DBConnection.getInstance().getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);

@@ -96,17 +96,14 @@ public class CartDaoImpl implements CartDao {
 
             for (CartItem item : cart) {
                 String checkStockSql = "select stock from products where product_id = ?";
-
                 try (PreparedStatement psCheck = conn.prepareStatement(checkStockSql)) {
                     psCheck.setInt(1, item.getProductId());
-
                     try (ResultSet rs = psCheck.executeQuery()) {
                         if (!rs.next()) {
                             System.out.println("San pham ID " + item.getProductId() + " khong ton tai.");
                             conn.rollback();
                             return false;
                         }
-
                         int stock = rs.getInt("stock");
                         if (stock < item.getQuantity()) {
                             System.out.println("San pham ID " + item.getProductId() + " khong du ton kho.");
@@ -115,7 +112,6 @@ public class CartDaoImpl implements CartDao {
                         }
                     }
                 }
-
                 subtotal += item.getSubtotal();
             }
 
@@ -131,7 +127,6 @@ public class CartDaoImpl implements CartDao {
                           and quantity > 0
                           and now() between start_time and end_time
                         """;
-
                 try (PreparedStatement psCoupon = conn.prepareStatement(couponSql)) {
                     normalizedCouponCode = couponCode.trim().toUpperCase();
                     psCoupon.setString(1, normalizedCouponCode);
