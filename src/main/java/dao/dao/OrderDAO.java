@@ -9,4 +9,4 @@ public interface OrderDAO {
     List<Order> findByUserId(int userId);
     Order findById(int orderId);
     boolean updateStatus(int orderId, String status);
-}
+}   

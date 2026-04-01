@@ -20,17 +20,6 @@ public class InputUtil {
             }
         }
     }
-    public static double inputDouble(String message) {
-        while (true) {
-            try {
-                System.out.print(message);
-                double value = Double.parseDouble(scanner.nextLine());
-                return value;
-            } catch (Exception e) {
-                System.out.println("vui long nhap so hop le!");
-            }
-        }
-    }
     public static boolean inputYesNo(String message) {
         while (true) {
             System.out.print(message + " (y/n): ");

@@ -14,10 +14,8 @@ public class AuthMenu {
         System.out.println("\n===== Dang nhap =====");
         System.out.print("Email: ");
         String email = sc.nextLine().trim();
-
         System.out.print("Mat khau: ");
         String password = sc.nextLine().trim();
-
         Users user = authService.login(email, password);
         if (user == null) {
             System.out.println("Dang nhap that bai.");

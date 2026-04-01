@@ -19,7 +19,6 @@ public class AuthServiceImpl implements AuthService {
         user.setPhone(safeTrim(user.getPhone()));
         user.setPassword(safeTrim(user.getPassword()));
         user.setAddress(safeTrim(user.getAddress()));
-
         if (ValidationUtil.isEmpty(user.getFullName())
                 || ValidationUtil.isEmpty(user.getEmail())
                 || ValidationUtil.isEmpty(user.getPhone())

@@ -31,9 +31,4 @@ public interface ProductDAO {
                                  Integer categoryId,
                                  Boolean inStock,
                                  String sortByPrice);
-//    List<Product> findAvailableProducts();
-//
-//    List<Product> filterByCategory(int categoryId);
-//
-//    List<Product> filterByPrice(double minPrice, double maxPrice);
 }

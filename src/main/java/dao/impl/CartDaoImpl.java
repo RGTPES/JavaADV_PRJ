@@ -27,9 +27,7 @@ public class CartDaoImpl implements CartDao {
         if (p == null || quantity <= 0) {
             return false;
         }
-
         List<CartItem> cart = getUserCart(userId);
-
         for (CartItem item : cart) {
             if (item.getProductId() == p.getProductId()) {
                 item.setQuantity(item.getQuantity() + quantity);
