@@ -7,7 +7,10 @@ import util.InputUtil;
 
 import java.util.List;
 
+import static util.InputUtil.inputInt;
+
 public class CategoryMenu {
+    int choice;
     private final CategoryServiceImpl categoryService;
 
     public CategoryMenu() {
@@ -23,7 +26,7 @@ public class CategoryMenu {
             System.out.println("4. Xoa danh muc");
             System.out.println("0. Quay lai");
 
-            int choice = InputUtil.inputInt("Chon chuc nang: ");
+            choice = inputInt("Chon chuc nang");
 
             switch (choice) {
                 case 1:
@@ -78,7 +81,7 @@ public class CategoryMenu {
     private void updateCategory() {
         System.out.println("\n===== Sua danh muc =====");
 
-        int id = InputUtil.inputInt("Nhap id danh muc can sua: ");
+        int id = inputInt("Nhap id danh muc can sua: ");
         Category oldCategory = categoryService.getCategoryById(id);
 
         if (oldCategory == null) {
@@ -101,7 +104,7 @@ public class CategoryMenu {
     private void deleteCategory() {
         System.out.println("\n===== Xoa danh muc =====");
 
-        int id = InputUtil.inputInt("Nhap id danh muc can xoa: ");
+        int id = inputInt("Nhap id danh muc can xoa: ");
         Category category = categoryService.getCategoryById(id);
 
         if (category == null) {

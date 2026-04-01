@@ -6,6 +6,8 @@ import service.impl.CouponServiceImpl;
 import java.util.List;
 import java.util.Scanner;
 
+import static util.InputUtil.inputInt;
+
 public class CouponMenu {
     private final Scanner sc = new Scanner(System.in);
     private final CouponServiceImpl couponService = new CouponServiceImpl();
@@ -19,9 +21,8 @@ public class CouponMenu {
             System.out.println("3. Sua coupon");
             System.out.println("4. Xoa coupon");
             System.out.println("0. Quay lai");
-            System.out.print("Chon: ");
 
-            choice = inputInt();
+            choice = inputInt("Chon chuc nang");
 
             switch (choice) {
                 case 1:
@@ -79,8 +80,7 @@ public class CouponMenu {
         System.out.print("Nhap phan tram giam: ");
         c.setDiscountPercent(inputDouble());
 
-        System.out.print("Nhap so luong: ");
-        c.setQuantity(inputInt());
+        c.setQuantity(inputInt("Nhap so luong: "));
 
 
         System.out.print("Nhap don toi thieu: ");
@@ -100,8 +100,7 @@ public class CouponMenu {
     }
 
     private void updateCoupon() {
-        System.out.print("Nhap id coupon can sua: ");
-        int id = inputInt();
+        int id = inputInt("Nhap id coupon can sua ");
 
         Coupon old = couponService.getCouponById(id);
         if (old == null) {
@@ -118,8 +117,7 @@ public class CouponMenu {
         System.out.print("Nhap phan tram giam moi: ");
         c.setDiscountPercent(inputDouble());
 
-        System.out.print("Nhap so luong moi: ");
-        c.setQuantity(inputInt());
+        c.setQuantity(inputInt("Nhap so luong moi "));
 
 
         System.out.print("Nhap don toi thieu moi: ");
@@ -139,22 +137,12 @@ public class CouponMenu {
     }
 
     private void deleteCoupon() {
-        System.out.print("Nhap id coupon can xoa: ");
-        int id = inputInt();
+        int id = inputInt("Nhap id coupon can xoa ");
 
         boolean result = couponService.deleteCoupon(id);
         System.out.println(result ? "Xoa coupon thanh cong." : "Xoa coupon that bai.");
     }
 
-    private int inputInt() {
-        while (true) {
-            try {
-                return Integer.parseInt(sc.nextLine().trim());
-            } catch (Exception e) {
-                System.out.print("Nhap so nguyen hop le: ");
-            }
-        }
-    }
 
     private double inputDouble() {
         while (true) {

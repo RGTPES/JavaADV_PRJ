@@ -9,13 +9,11 @@ public class InputUtil {
         return scanner.nextLine().trim();
     }
     public static int inputInt(String message) {
-        System.out.println(message);
-        while(true){
-            try{
-                System.out.println(message);
-                int value = Integer.parseInt(scanner.nextLine().trim());
-                return value;
-            }catch(Exception e){
+        while (true) {
+            try {
+                System.out.print(message + ": ");
+                return Integer.parseInt(scanner.nextLine().trim());
+            } catch (Exception e) {
                 System.out.println("Vui long nhap so nguyen hop le");
             }
         }
